@@ -42,6 +42,9 @@ async def skor():
 		cmd.truncate()
 		await asyncio.sleep(5)
 
+def tutanlari_ayir(tutan):
+    return tutan[1]
+
 class Loto(commands.Cog):
 	def __init__(self, Bot):
 		self.Bot = Bot
@@ -108,6 +111,18 @@ class Loto(commands.Cog):
 					cmd.seek(0)
 					json.dump(data, cmd, indent=4, ensure_ascii=False)
 					cmd.truncate()
+				if not tutanlar == {}:
+					tutanlar = list(tutanlar.items())
+					tutanlar.sort(key=tutanlari_ayir, reverse=True)
+					command_embed.title = "Sonuçlar!"
+					for i in tutanlar:
+						command_embed.add_field(name=f"{tutanlar.index(i)}.", value=f"**<@{i[0]}> = {i[1]}**", inline=False)
+					else: await inter.edit(embed=command_embed)
+				else:
+					command_embed.title = "Hata!"
+					command_embed.description = "**Kimse loto oynamamış!**"
+					command_embed.color = discord.Color.from_rgb(255, 45, 45)
+					await inter.edit(embed=command_embed)
 
 			elif islem == "sifirla":
 				with open('loto.json', 'r+') as cmd:
